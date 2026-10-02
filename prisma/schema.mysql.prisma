@@ -1,0 +1,230 @@
+// Prisma schema for Belajar Ads — Production MariaDB / MySQL (WebNesia cPanel)
+// Optimized with native MySQL types (@db.Text) to prevent VARCHAR(191) string truncation errors
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model AdminUser {
+  id        String   @id @default(cuid())
+  name      String
+  email     String   @unique
+  password  String   // Hashed with bcrypt
+  role      String   @default("ADMIN") // SUPERADMIN, ADMIN, EDITOR
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Article {
+  id            String    @id @default(cuid())
+  slug          String    @unique
+  titleId       String
+  titleEn       String
+  excerptId     String    @db.Text
+  excerptEn     String    @db.Text
+  contentId     String    @db.LongText // Rich markdown/HTML content in ID
+  contentEn     String    @db.LongText // Rich markdown/HTML content in EN
+  featuredImage String?   @db.Text
+  category      String    // Fundamental, Campaign, Analytics, Creative, Scaling, etc.
+  tags          String?   @db.Text     // Comma separated
+  author        String    @default("Belajar Ads Team")
+  readingTime   String    @default("5 min read")
+  isPublished   Boolean   @default(false)
+  publishedAt   DateTime?
+  metaTitleId   String?
+  metaTitleEn   String?
+  metaDescId    String?   @db.Text
+  metaDescEn    String?   @db.Text
+  ogImage       String?   @db.Text
+  views         Int       @default(0)
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  @@index([slug])
+  @@index([isPublished])
+}
+
+model ArticleCategory {
+  id            String   @id @default(cuid())
+  slug          String   @unique
+  nameId        String
+  nameEn        String
+  descriptionId String?  @db.Text
+  descriptionEn String?  @db.Text
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+}
+
+model Program {
+  id                 String   @id @default(cuid())
+  slug               String   @unique
+  nameId             String
+  nameEn             String
+  category           String   // ECOURSE, TRAINING, WORKSHOP, PRIVATE_MENTORING, COMPANY_TRAINING
+  topic              String   @default("Meta Ads")
+  descriptionId      String   @db.Text
+  descriptionEn      String   @db.Text
+  overviewId         String?  @db.Text
+  overviewEn         String?  @db.Text
+  level              String   @default("All Levels")
+  format             String   @default("Online")
+  isOnline           Boolean  @default(true)
+  duration           String?
+  price              String?
+  instructor         String?  @default("Belajar Ads Mentor")
+  startDate          String?
+  registrationStatus String   @default("AVAILABLE")
+  featuredImage      String?  @db.Text
+  ctaTextId          String?  @default("Daftar Sekarang")
+  ctaTextEn          String?  @default("Register Now")
+  registrationUrl    String?  @db.Text
+  metaTitleId        String?
+  metaTitleEn        String?
+  metaDescId         String?  @db.Text
+  metaDescEn         String?  @db.Text
+  isFeatured         Boolean  @default(false)
+  createdAt          DateTime @default(now())
+  updatedAt          DateTime @updatedAt
+
+  @@index([slug])
+  @@index([category])
+}
+
+model Event {
+  id                 String   @id @default(cuid())
+  slug               String   @unique
+  titleId            String
+  titleEn            String
+  category           String   @default("WORKSHOP")
+  date               String
+  time               String?
+  location           String   @default("Online via Zoom")
+  isOnline           Boolean  @default(true)
+  speaker            String   @default("Belajar Ads Practitioner")
+  speakerRoleId      String?
+  speakerRoleEn      String?
+  speakerImage       String?  @db.Text
+  descriptionId      String   @db.Text
+  descriptionEn      String   @db.Text
+  agendaId           String?  @db.Text
+  agendaEn           String?  @db.Text
+  whatYouWillLearnId String?  @db.Text
+  whatYouWillLearnEn String?  @db.Text
+  whoShouldAttendId  String?  @db.Text
+  whoShouldAttendEn  String?  @db.Text
+  price              String?  @default("Free / Community")
+  registrationUrl    String?  @db.Text
+  capacity           String?
+  status             String   @default("UPCOMING")
+  eventImage         String?  @db.Text
+  gallery            String?  @db.Text // JSON array of image URLs
+  metaTitleId        String?
+  metaTitleEn        String?
+  metaDescId         String?  @db.Text
+  metaDescEn         String?  @db.Text
+  createdAt          DateTime @default(now())
+  updatedAt          DateTime @updatedAt
+
+  @@index([slug])
+  @@index([status])
+}
+
+model Resource {
+  id            String   @id @default(cuid())
+  slug          String   @unique
+  titleId       String
+  titleEn       String
+  type          String   // TUTORIAL, CASE_STUDY, ADS_BREAKDOWN, FREE_RESOURCE
+  category      String?  @default("Meta Ads")
+  excerptId     String   @db.Text
+  excerptEn     String   @db.Text
+  contentId     String   @db.LongText
+  contentEn     String   @db.LongText
+  downloadUrl   String?  @db.Text
+  featuredImage String?  @db.Text
+  isPublished   Boolean  @default(true)
+  metaTitleId   String?
+  metaTitleEn   String?
+  metaDescId    String?  @db.Text
+  metaDescEn    String?  @db.Text
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  @@index([slug])
+  @@index([type])
+}
+
+model Mentor {
+  id          String   @id @default(cuid())
+  name        String
+  roleId      String
+  roleEn      String
+  photo       String?  @db.Text
+  bioId       String   @db.Text
+  bioEn       String   @db.Text
+  expertiseId String
+  expertiseEn String
+  socialUrl   String?  @db.Text
+  order       Int      @default(0)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Lead {
+  id             String   @id @default(cuid())
+  name           String
+  email          String
+  phone          String
+  company        String?
+  participants   String?
+  trainingNeeds  String?  @db.Text
+  preferredDate  String?
+  isOnline       Boolean? @default(true)
+  source         String   @default("CONTACT_FORM")
+  message        String?  @db.Text
+  status         String   @default("NEW")
+  notes          String?  @db.Text
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  @@index([status])
+  @@index([source])
+}
+
+model SiteSetting {
+  id        String   @id @default(cuid())
+  key       String   @unique
+  value     String   @db.Text
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model PageContent {
+  id         String   @id @default(cuid())
+  pageKey    String   // home, programs, events, community, for_business, resources, about, contact
+  sectionKey String   // hero, pillars, cta, etc.
+  contentId  String   @db.LongText // JSON string of Indonesian content
+  contentEn  String   @db.LongText // JSON string of English content
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  @@unique([pageKey, sectionKey])
+  @@index([pageKey])
+}
+
+model PageVisibility {
+  id        String   @id @default(cuid())
+  pageKey   String   @unique
+  name      String
+  route     String
+  isVisible Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([pageKey])
+}

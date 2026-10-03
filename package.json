@@ -4,13 +4,14 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "prisma generate && next build",
+    "build": "npm run prisma:generate && next build",
     "postbuild": "node scripts/copy-standalone-assets.js",
     "start": "next start",
     "start:standalone": "node server.js",
     "lint": "next lint",
-    "prisma:generate": "prisma generate",
+    "prisma:generate": "node scripts/generate-prisma.js",
     "prisma:push": "prisma db push",
+    "prisma:push:mysql": "prisma db push --schema=prisma/schema.mysql.prisma",
     "prisma:seed": "node prisma/seed.js"
   },
   "dependencies": {

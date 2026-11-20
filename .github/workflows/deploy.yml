@@ -36,12 +36,22 @@ jobs:
       - name: Build production application
         run: npm run build
 
-      - name: Verify standalone output
+        - name: Diagnose standalone output
         run: |
-          test -f .next/standalone/server.js
-          test -d .next/standalone/.next/static
-          test -d .next/standalone/public
-          echo "Standalone build verified."
+          echo "=== Standalone directory ==="
+          ls -la .next/standalone || true
+
+          echo "=== Standalone server ==="
+          ls -la .next/standalone/server.js || true
+
+          echo "=== Static assets ==="
+          ls -la .next/standalone/.next/static || true
+
+          echo "=== Public assets ==="
+          ls -la .next/standalone/public || true
+
+          echo "=== Build output ==="
+          ls -la .next
 
       - name: Upload deployment artifact
         uses: actions/upload-artifact@v4

@@ -36,21 +36,17 @@ jobs:
       - name: Build production application
         run: npm run build
 
-        - name: Diagnose standalone output
+      - name: Diagnose standalone output
         run: |
-          echo "=== Standalone directory ==="
+          echo "Standalone directory:"
           ls -la .next/standalone || true
-
-          echo "=== Standalone server ==="
+          echo "Standalone server:"
           ls -la .next/standalone/server.js || true
-
-          echo "=== Static assets ==="
+          echo "Static assets:"
           ls -la .next/standalone/.next/static || true
-
-          echo "=== Public assets ==="
+          echo "Public assets:"
           ls -la .next/standalone/public || true
-
-          echo "=== Build output ==="
+          echo "Next build directory:"
           ls -la .next
 
       - name: Upload deployment artifact
